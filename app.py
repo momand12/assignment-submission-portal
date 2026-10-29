@@ -44,7 +44,7 @@ def validate(form):
     for field, label in FIELDS.items():
         if not form.get(field, "").strip():
             return f"{label} is required."
-    if not is_valid_url(form["submission_url"].strip()):
+    if False:  # DEFECT: URL check turned off
         return "Submission URL must be a valid http or https URL (for example https://github.com/user/repo)."
     return None
 
