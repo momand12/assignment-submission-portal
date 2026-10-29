@@ -1,8 +1,6 @@
 @echo off
 title ngrok tunnel - port 5050
-rem Your free static ngrok domain (from dashboard.ngrok.com -> Domains)
-set NGROK_DOMAIN=PUT-YOUR-DOMAIN-HERE.ngrok-free.app
-echo Opening tunnel https://%NGROK_DOMAIN% -^> http://localhost:5050
-echo Keep this window open while you push and during the demo.
-ngrok http 5050 --domain=%NGROK_DOMAIN%
+cd /d "%~dp0"
+echo Starting the ngrok tunnel to http://localhost:5050. Keep this window open.
+".venv\Scripts\python.exe" receiver\tunnel.py
 pause

@@ -29,8 +29,10 @@ tests/test_app.py          pytest tests (use a temporary data file)
 ci/make_report.py          JUnit XML -> test-report.json
 ci/send_email.py           Emails the report (smtplib)
 receiver/receiver.py       Local report receiver (port 5050, POST /report)
+receiver/tunnel.py         ngrok tunnel (static domain -> localhost:5050)
 start-receiver.bat         Double-click to start the receiver
 start-ngrok.bat            Double-click to start the ngrok tunnel
+setup-ngrok-token.bat      One-time: save the ngrok authtoken
 site/                      Static demo for GitHub Pages (localStorage)
 .github/workflows/ci.yml   CI pipeline
 DEMO.md                    Demo steps and screenshot list
@@ -64,9 +66,14 @@ Both must stay open while you push and during the demo.
    It listens on `http://localhost:5050/report`. Port 5050 is used so it does not clash
    with the Flask app on port 5000. The secret token is read from `receiver/token.txt`
    (not in git) or the `REPORT_TOKEN` environment variable.
-2. **ngrok:** one-time setup: `ngrok config add-authtoken <your token>`. Put your free static
-   domain in `start-ngrok.bat`, then double-click it. It forwards
-   `https://<your-domain>.ngrok-free.app` to `localhost:5050`.
+2. **ngrok tunnel:** double-click `start-ngrok.bat` (or run `python receiver/tunnel.py`).
+   It forwards `https://prelaunch-helpline-busybody.ngrok-free.dev` (my free static
+   domain) to `localhost:5050`.
+   - It uses ngrok's official Python package (`pip install -r receiver/requirements.txt`)
+     instead of `ngrok.exe`, because Windows Defender blocks `ngrok.exe` on my laptop
+     (see `PROBLEMS.md`).
+   - One-time setup: double-click `setup-ngrok-token.bat` and paste the authtoken from the
+     ngrok dashboard. It is saved in ngrok's own config file, not in this repo.
 
 When a report arrives, the receiver prints a log line and saves:
 - `test-report.json` (latest report, in the project folder)
@@ -78,7 +85,7 @@ Set in **Settings -> Secrets and variables -> Actions**.
 
 | Name | Type | Value |
 |------|------|-------|
-| `REPORT_URL` | Secret | `https://<your-domain>.ngrok-free.app/report` |
+| `REPORT_URL` | Secret | `https://prelaunch-helpline-busybody.ngrok-free.dev/report` |
 | `REPORT_TOKEN` | Secret | same value as `receiver/token.txt` |
 | `SMTP_USERNAME` | Secret | sender Gmail address |
 | `SMTP_PASSWORD` | Secret | Gmail **app password** (16 characters) |
