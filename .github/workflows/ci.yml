@@ -1,0 +1,104 @@
+name: CI
+
+# Run on every push to every branch.
+on:
+  push:
+    branches: ["**"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the pushed commit
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # If any test fails, pytest exits with code 1, so this step and the job fail.
+      - name: Run tests
+        run: pytest -v --junitxml=results.xml
+
+      # The steps below use if: always(), so they run even when the tests failed.
+      - name: Make JSON test report
+        if: always()
+        run: python ci/make_report.py results.xml test-report.json
+
+      - name: Upload report as artifact
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: test-report-run-${{ github.run_number }}
+          path: |
+            test-report.json
+            results.xml
+          if-no-files-found: warn
+
+      # Sends the report through the ngrok tunnel to the receiver on my laptop.
+      # continue-on-error: a delivery problem never changes the test result.
+      - name: Send report to local receiver
+        if: always()
+        continue-on-error: true
+        env:
+          REPORT_URL: ${{ secrets.REPORT_URL }}
+          REPORT_TOKEN: ${{ secrets.REPORT_TOKEN }}
+        run: |
+          curl --fail-with-body --silent --show-error --max-time 30 \
+            -X POST "$REPORT_URL" \
+            -H "Content-Type: application/json" \
+            -H "X-Report-Token: $REPORT_TOKEN" \
+            -H "ngrok-skip-browser-warning: true" \
+            --data-binary @test-report.json
+
+      # Bonus 2: email the report. continue-on-error: an email problem
+      # never turns a passing run red.
+      - name: Email test report
+        if: always()
+        continue-on-error: true
+        env:
+          SMTP_SERVER: smtp.gmail.com
+          SMTP_PORT: "587"
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          REPORT_EMAIL_TO: ${{ vars.REPORT_EMAIL_TO }}
+        run: python ci/send_email.py test-report.json
+
+  # Bonus 1: publish the static demo to GitHub Pages.
+  # needs: test  -> only runs if every step of the test job succeeded.
+  # if: main     -> only for pushes to the main branch.
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - name: Check out the pushed commit
+        uses: actions/checkout@v5
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload the site folder
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
