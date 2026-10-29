@@ -54,7 +54,8 @@ def main():
     server = os.environ.get("SMTP_SERVER") or "smtp.gmail.com"
     port = int(os.environ.get("SMTP_PORT") or 587)
     username = os.environ.get("SMTP_USERNAME", "")
-    password = os.environ.get("SMTP_PASSWORD", "")
+    # Google shows app passwords as "abcd efgh ijkl mnop"; the spaces are not part of it.
+    password = os.environ.get("SMTP_PASSWORD", "").replace(" ", "")
     receiver = os.environ.get("REPORT_EMAIL_TO", "")
 
     if not (username and password and receiver):
