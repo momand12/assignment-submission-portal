@@ -30,6 +30,7 @@ ci/make_report.py          JUnit XML -> test-report.json
 ci/send_email.py           Emails the report (smtplib)
 receiver/receiver.py       Local report receiver (port 5050, POST /report)
 receiver/tunnel.py         ngrok tunnel (static domain -> localhost:5050)
+start-portal.bat           Double-click to start the portal (port 5000)
 start-receiver.bat         Double-click to start the receiver
 start-ngrok.bat            Double-click to start the ngrok tunnel
 setup-ngrok-token.bat      One-time: save the ngrok authtoken
@@ -48,7 +49,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Then open http://localhost:5000
+Then open http://localhost:5000 (or just double-click `start-portal.bat`).
 
 ## Run the tests
 
