@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Assignment Submission Portal (Demo)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Assignment Submission Portal</h1>
+  <p class="note">Static demo on GitHub Pages. Submissions are saved only in this browser (localStorage).
+    The real Flask portal runs with <code>python app.py</code>.</p>
+
+  <p class="error" id="error" hidden></p>
+  <p class="success" id="success" hidden>Submission saved.</p>
+
+  <form id="form" novalidate>
+    <label for="name">Name</label>
+    <input id="name" name="name">
+
+    <label for="registration_number">Registration number</label>
+    <input id="registration_number" name="registration_number" placeholder="FA23-BSE-060">
+
+    <label for="assignment_title">Assignment title</label>
+    <input id="assignment_title" name="assignment_title">
+
+    <label for="submission_url">Submission URL</label>
+    <input id="submission_url" name="submission_url" placeholder="https://github.com/user/repo">
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <h2>Saved Submissions</h2>
+  <p id="empty">No submissions yet.</p>
+  <table id="table" hidden>
+    <thead>
+      <tr><th>#</th><th>Name</th><th>Registration number</th><th>Assignment title</th><th>Submission URL</th><th>Submitted at</th></tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <button id="clear" type="button">Clear my saved submissions</button>
+
+  <script src="script.js"></script>
+</body>
+</html>

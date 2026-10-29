@@ -1,0 +1,9 @@
+body { font-family: Arial, sans-serif; max-width: 900px; margin: 30px auto; padding: 0 15px; }
+label { display: block; margin-top: 12px; font-weight: bold; }
+input { width: 100%; padding: 8px; box-sizing: border-box; }
+button { margin-top: 16px; padding: 8px 20px; }
+.note { color: #555; }
+.error { color: #b00020; border: 1px solid #b00020; padding: 10px; margin: 15px 0; }
+.success { color: #1b5e20; border: 1px solid #1b5e20; padding: 10px; margin: 15px 0; }
+table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+th, td { border: 1px solid #999; padding: 6px; text-align: left; word-break: break-all; }
