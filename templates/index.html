@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Assignment Submission Portal</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: 30px auto; padding: 0 15px; }
+    label { display: block; margin-top: 12px; font-weight: bold; }
+    input { width: 100%; padding: 8px; box-sizing: border-box; }
+    button { margin-top: 16px; padding: 8px 20px; }
+    .error { color: #b00020; border: 1px solid #b00020; padding: 10px; margin: 15px 0; }
+    .success { color: #1b5e20; border: 1px solid #1b5e20; padding: 10px; margin: 15px 0; }
+    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+    th, td { border: 1px solid #999; padding: 6px; text-align: left; }
+  </style>
+</head>
+<body>
+  <h1>Assignment Submission Portal</h1>
+
+  {% if error %}
+    <p class="error" id="error">{{ error }}</p>
+  {% endif %}
+  {% if saved %}
+    <p class="success">Submission saved.</p>
+  {% endif %}
+
+  <form method="post" novalidate>
+    <label for="name">Name</label>
+    <input id="name" name="name" value="{{ form.get('name', '') }}">
+
+    <label for="registration_number">Registration number</label>
+    <input id="registration_number" name="registration_number" placeholder="FA23-BSE-060"
+           value="{{ form.get('registration_number', '') }}">
+
+    <label for="assignment_title">Assignment title</label>
+    <input id="assignment_title" name="assignment_title" value="{{ form.get('assignment_title', '') }}">
+
+    <label for="submission_url">Submission URL</label>
+    <input id="submission_url" name="submission_url" placeholder="https://github.com/user/repo"
+           value="{{ form.get('submission_url', '') }}">
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <h2>Saved Submissions</h2>
+  {% if submissions %}
+    <table>
+      <tr><th>#</th><th>Name</th><th>Registration number</th><th>Assignment title</th><th>Submission URL</th><th>Submitted at</th></tr>
+      {% for s in submissions %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ s.name }}</td>
+          <td>{{ s.registration_number }}</td>
+          <td>{{ s.assignment_title }}</td>
+          <td><a href="{{ s.submission_url }}" target="_blank" rel="noopener">{{ s.submission_url }}</a></td>
+          <td>{{ s.submitted_at }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>No submissions yet.</p>
+  {% endif %}
+</body>
+</html>

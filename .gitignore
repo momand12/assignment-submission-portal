@@ -1,0 +1,21 @@
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+
+# Data and reports created while running (not source code)
+submissions.json
+results.xml
+test-report.json
+reports/
+
+# Local secret for the receiver (the same value is a GitHub secret)
+receiver/token.txt
+
+# Personal notes and report
+VIVA_NOTES.md
+*.docx
+~$*
+
+# Claude Code app settings
+.claude/
